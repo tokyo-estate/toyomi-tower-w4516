@@ -124,7 +124,8 @@ figcaption .t{color:#fff;font-weight:400}
 .movie.wide video,.movie.wide.short video{height:auto;min-height:0;aspect-ratio:16/9;max-height:none;object-fit:cover;animation:none;object-position:50% 50%}
 .movie.wide .cap{position:static;padding:18px 22px 30px;background:#000}
 #tl1 .cap,#tl2 .cap-sub{display:none}
-#tl2 .cap-main-sp{display:block}}
+#tl2 .cap-main-sp{display:block}
+.movie video.sp34{height:auto;min-height:0;max-height:none;aspect-ratio:3/4;object-fit:cover;animation:none}}
 .cap-main-sp{display:none}
 #tl2 video{height:auto;min-height:0;max-height:none;aspect-ratio:1920/920;object-fit:contain;animation:none;object-position:50% 50%}
 .movie .cap{position:absolute;left:0;right:0;bottom:0;padding:120px 22px 40px;background:linear-gradient(180deg,rgba(0,0,0,0),rgba(0,0,0,.8));z-index:2}
@@ -437,7 +438,7 @@ html[lang="zh"] .hero .p{white-space:normal;flex-wrap:wrap;row-gap:4px}html[lang
 
 <!-- 06 MOVIE -->
 <section class="movie">
-  <video class="lazy" muted loop playsinline webkit-playsinline x5-playsinline x5-video-player-type="h5-page" preload="none" poster="img/poster_movie.jpg" data-webm="video/loop_movie.webm" data-mp4="video/loop_movie.mp4"></video>
+  <video class="lazy sp34" muted loop playsinline webkit-playsinline x5-playsinline x5-video-player-type="h5-page" preload="none" poster="img/poster_movie.jpg" data-webm="video/loop_movie.webm" data-mp4="video/loop_movie.mp4" data-poster-sp="img/poster_movie_sp.jpg" data-webm-sp="video/loop_movie_sp.webm" data-mp4-sp="video/loop_movie_sp.mp4"></video>
   <div class="cap">
     <p class="no">06 — Movie</p>
     <h2 data-i18n="t072">海と空のあいだに、<br>53階建ツインタワー</h2>
@@ -657,11 +658,11 @@ html[lang="zh"] .hero .p{white-space:normal;flex-wrap:wrap;row-gap:4px}html[lang
   document.querySelectorAll('.rv,.zoom').forEach(function(el){io.observe(el)});
   // lazy videos: 1画面手前で読み込み、画面外では停止
   var lio=new IntersectionObserver(function(es){es.forEach(function(e){var v=e.target;
-    if(e.isIntersecting){ v.dataset.vis='1'; if(!v.dataset.loaded){ if(!saveData){addSrc(v,v.dataset.webm,v.dataset.mp4);} v.dataset.loaded='1'; } tryPlay(v);
+    if(e.isIntersecting){ v.dataset.vis='1'; if(!v.dataset.loaded){ if(!saveData){ if(portrait&&v.dataset.mp4Sp){addSrc(v,v.dataset.webmSp,v.dataset.mp4Sp);}else{addSrc(v,v.dataset.webm,v.dataset.mp4);} } v.dataset.loaded='1'; } tryPlay(v);
       var n=0; (function retry(){ if(n++<6&&v.dataset.vis&&v.paused){ tryPlay(v); setTimeout(retry,1500);} })(); }
     else{ v.dataset.vis=''; if(v.dataset.loaded){ v.pause(); } }
   })},{rootMargin:'100% 0px 100% 0px',threshold:0.01});
-  document.querySelectorAll('video.lazy').forEach(function(v){lio.observe(v)});
+  document.querySelectorAll('video.lazy').forEach(function(v){ if(portrait&&v.dataset.posterSp){v.poster=v.dataset.posterSp;} lio.observe(v)});  // 縦画面は SP 版（3:4・横幅固定）
   // WeChat内蔵ブラウザ対策: JSBridge準備完了時と最初のタッチ/スクロール時に、画面内の動画を再生し直す
   function kick(){ if(!saveData){ if(hv.paused){tryPlay(hv);} document.querySelectorAll('video.lazy').forEach(function(v){ if(v.dataset.vis&&v.dataset.loaded&&v.paused){tryPlay(v);} }); } }
   if(window.WeixinJSBridge){kick();}else{document.addEventListener('WeixinJSBridgeReady',kick,false);}
